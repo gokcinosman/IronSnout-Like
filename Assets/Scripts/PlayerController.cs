@@ -15,8 +15,22 @@ public class PlayerController : MonoBehaviour
 
         RotatePlayer();
         Jump();
+        Attack();
 
 
+
+    }
+    public void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            AnimationManager.instance.ChangeState(AnimationManager.instance.RIGHTHOOK);
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            AnimationManager.instance.ChangeState(AnimationManager.instance.LEFTHOOK);
+
+        }
 
     }
     public void RotatePlayer()
@@ -25,21 +39,24 @@ public class PlayerController : MonoBehaviour
         {
             transform.Rotate(Vector3.up, -180);
             isLookingLeft = false;
+
         }
         else if (!isLookingLeft && Input.GetKeyDown(KeyCode.A))
         {
             transform.Rotate(Vector3.up, 180);
             isLookingLeft = true;
+
         }
+
     }
     public void Jump()
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            Debug.Log("Jump");
+
             if (isGrounded)
             {
-                Debug.Log("Grounded");
+
                 GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                 jumpCount++;
                 isGrounded = false;
