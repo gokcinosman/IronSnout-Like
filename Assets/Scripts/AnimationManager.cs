@@ -13,6 +13,18 @@ public class AnimationManager : MonoBehaviour
 
     public Animator animator;
     public string currentState;
+    void Update()
+    {
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.normalizedTime >= 1 && !animator.IsInTransition(0))
+        {
+            if (currentState != IDLE)
+            {
+                ChangeState(IDLE);
+            }
+        }
+    }
 
     public void Awake()
     {
@@ -27,15 +39,11 @@ public class AnimationManager : MonoBehaviour
         if (currentState == newState)
             return;
 
-        animator.Play(newState, 0, 0);
+        animator.Play(newState);
         currentState = newState;
-        // StartCoroutine(ChangeStateAfterTime(IDLE));
+
     }
-    public IEnumerator ChangeStateAfterTime(string newState)
-    {
-        yield return new WaitForSeconds(animationTime);
-        ChangeState(newState);
-    }
+
 
 
 }
