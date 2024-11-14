@@ -746,6 +746,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 304ac2b72c4acea4d8d339b82f80d6fb, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 3ba5df55de38cf04d86504dab0da7464, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8052196607835650671, guid: 3ba5df55de38cf04d86504dab0da7464, type: 3}
       propertyPath: m_LocalRotation.w
       value: -0.012442643
@@ -1256,6 +1260,10 @@ MonoBehaviour:
   LEFTHOOK: LeftHook
   RIGHTHOOK: RightHook
   JUMP: Jump
+  UPPERCUT: Uppercut
+  LOWKICK: LowKick
+  CROUCH: Crouch
+  CROUCHPUNCHLEFT: CrouchPunchLeft
   animationTime: 1
   animator: {fileID: 881852056}
   currentState: 

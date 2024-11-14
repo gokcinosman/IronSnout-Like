@@ -38,7 +38,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-
             if (isGrounded)
             {
 
