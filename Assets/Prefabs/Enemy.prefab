@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 9006448018861801427}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -125,6 +125,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   stoppingDistance: 1.5
   retreatDistance: 5
+  canMove: 1
 --- !u!54 &9006448018861801427
 Rigidbody:
   m_ObjectHideFlags: 0

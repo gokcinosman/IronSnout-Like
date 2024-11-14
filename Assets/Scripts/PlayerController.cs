@@ -10,29 +10,14 @@ public class PlayerController : MonoBehaviour
     public float jumpCountMax = 2;
     //Must be start with looking left
     public bool isLookingLeft = true;
+
     void Update()
     {
-
         RotatePlayer();
         Jump();
-        Attack();
-
-
 
     }
-    public void Attack()
-    {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            AnimationManager.instance.ChangeState(AnimationManager.instance.RIGHTHOOK);
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            AnimationManager.instance.ChangeState(AnimationManager.instance.LEFTHOOK);
 
-        }
-
-    }
     public void RotatePlayer()
     {
         if (isLookingLeft && Input.GetKeyDown(KeyCode.D))
