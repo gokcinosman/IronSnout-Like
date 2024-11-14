@@ -44,6 +44,13 @@ public class EnemySpawnController : MonoBehaviour
     public bool showSpawnPoints = true;
     public Color spawnPointColor = Color.red;
     public Color restrictedSpawnPointColor = Color.yellow;
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SpawnEnemy();
+        }
+    }
 
     public void SpawnEnemy()
     {
