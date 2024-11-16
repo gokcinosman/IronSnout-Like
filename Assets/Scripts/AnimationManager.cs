@@ -31,18 +31,18 @@ public class AnimationManager : MonoBehaviour
 
     public Animator animator;
     public string currentState;
-    void Update()
-    {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+    // void Update()
+    // {
+    //     AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        if (stateInfo.normalizedTime >= 2 && !animator.IsInTransition(0))
-        {
-            if (currentState != IDLE && currentState != CROUCH)
-            {
-                ChangeState(IDLE);
-            }
-        }
-    }
+    //     if (stateInfo.normalizedTime >= 2 && !animator.IsInTransition(0))
+    //     {
+    //         if (currentState != IDLE && currentState != CROUCH)
+    //         {
+    //             ChangeState(IDLE);
+    //         }
+    //     }
+    // }
 
     public void Awake()
     {

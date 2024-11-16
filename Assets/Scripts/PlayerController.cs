@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : AnimatorBrain
 {
     public bool isGrounded;
     public float jumpForce = 5;
@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     public float jumpCountMax = 2;
     //Must be start with looking left
     public bool isLookingLeft = true;
+    private const int UPPERBODY = 0;
+    private const int LOWERBODY = 1;
 
     void Update()
     {
@@ -17,6 +19,7 @@ public class PlayerController : MonoBehaviour
         Jump();
 
     }
+
 
     public void RotatePlayer()
     {
@@ -61,6 +64,7 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
     }
+
 
 
 }
