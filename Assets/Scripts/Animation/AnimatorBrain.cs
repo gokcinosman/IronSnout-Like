@@ -18,6 +18,7 @@ public enum Animations
     PUNCHRIGHT,
     KICKLEFT,
     KICKRIGHT,
+    AIRKICK,
     NONE
 }
 public class AnimatorBrain : MonoBehaviour
@@ -36,6 +37,7 @@ public class AnimatorBrain : MonoBehaviour
         Animator.StringToHash("PunchRight"),
         Animator.StringToHash("KickLeft"),
         Animator.StringToHash("KickRight"),
+        Animator.StringToHash("AirKick"),
 
     };
 

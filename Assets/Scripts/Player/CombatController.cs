@@ -8,6 +8,9 @@ public class CombatController : AnimatorBrain
     private float comboTimer = 0f;
     private float comboTimeout = 1f;
     [SerializeField]
+    private float fastFallSpeed = 20f;
+    private Rigidbody rb;
+    [SerializeField]
     private int comboCount = 0;
     public bool shouldKnockback = false;
     private bool isRightCombo = false;
@@ -15,6 +18,7 @@ public class CombatController : AnimatorBrain
     private bool isAttacking = false;
     private bool isCrouching = false;
     public bool isUpperCut = false;
+    private bool isAirKicking = false;
     private const int UPPERBODY = 0;
     private const int LOWERBODY = 1;
 
@@ -39,6 +43,7 @@ public class CombatController : AnimatorBrain
             Destroy(gameObject);
         }
         playerController = GetComponent<PlayerController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void Start()
@@ -106,7 +111,7 @@ public class CombatController : AnimatorBrain
 
     void OnAnimationComplete()
     {
-        if (!isCrouching)
+        if (!isCrouching && !isAirKicking)
         {
             isAttacking = false;
             isComboInterrupted = false;
@@ -139,7 +144,13 @@ public class CombatController : AnimatorBrain
 
         if (isAttacking && isCrouching) return;
 
-        if (Input.GetKeyDown(KeyCode.D))
+        // Check for air kick first
+        if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A)) && !playerController.isGrounded)
+        {
+            HandleAirKick(layer);
+        }
+        // If not air kicking, proceed with normal attacks
+        else if (Input.GetKeyDown(KeyCode.D))
         {
             HandleRightCombo(layer);
         }
@@ -149,7 +160,6 @@ public class CombatController : AnimatorBrain
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
-
             if (layer == LOWERBODY)
             {
                 HandleUppercut(layer);
@@ -159,9 +169,38 @@ public class CombatController : AnimatorBrain
         {
             HandleCrouch(layer);
         }
-        else if (!isAttacking && !isCrouching)
+        else if (!isAttacking && !isCrouching && !isAirKicking)
         {
             Play(Animations.IDLE, layer, false, true);
+        }
+    }
+    private void HandleAirKick(int layer)
+    {
+        if (!isAttacking && !isAirKicking)
+        {
+            ActivateKnockback();
+            isAirKicking = true;
+            isAttacking = true;
+            Play(Animations.AIRKICK, layer, true, true);
+
+            // Reset air kick after animation
+            StartCoroutine(ResetAirKick());
+        }
+    }
+
+    IEnumerator ResetAirKick()
+    {
+        // Wait for a short duration (adjust based on your animation length)
+        yield return new WaitForSeconds(0.5f);
+        isAirKicking = false;
+        isAttacking = false;
+        ResetCombo();
+
+        // Only reset animation if we're still in the air
+        if (!playerController.isGrounded)
+        {
+            Play(Animations.IDLE, UPPERBODY, false, true);
+            Play(Animations.IDLE, LOWERBODY, false, true);
         }
     }
     private void HandleRightCombo(int layer)
@@ -206,11 +245,21 @@ public class CombatController : AnimatorBrain
         if (collision.gameObject.CompareTag("Ground"))
         {
             uppercutCount = 0;
+            isAirKicking = false;  // Reset air kick state when landing
+            // Reset vertical velocity on ground contact
+            if (rb.velocity.y < 0)
+            {
+                Vector3 currentVelocity = rb.velocity;
+                currentVelocity.y = 0;
+                rb.velocity = currentVelocity;
+            }
         }
     }
+
+
     private void ExecuteUppercut(int layer)
     {
-        Debug.Log("Uppercut");
+
         uppercutCount++;
         isUpperCut = true;
         isAttacking = true;
@@ -225,10 +274,24 @@ public class CombatController : AnimatorBrain
         {
             isCrouching = true;
             isAttacking = true;
+
+            // Check if player is in the air
+            if (!playerController.isGrounded)
+            {
+                // Apply fast fall velocity
+                ApplyFastFall();
+            }
         }
         Play(Animations.CROUCH, layer, true, true);
     }
 
+    private void ApplyFastFall()
+    {
+        // Preserve horizontal velocity but increase downward velocity
+        Vector3 currentVelocity = rb.velocity;
+        currentVelocity.y = -fastFallSpeed;
+        rb.velocity = currentVelocity;
+    }
     void ExecuteRightCombo(int layer, bool interrupt)
     {
         comboTimer = 0;
