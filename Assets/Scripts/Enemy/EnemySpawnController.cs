@@ -72,7 +72,7 @@ public class EnemySpawnController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Bu spawn noktası için uygun düşman bulunamadı!");
+            Debug.Log("Bu spawn noktası için uygun düşman bulunamadı!");
         }
     }
 

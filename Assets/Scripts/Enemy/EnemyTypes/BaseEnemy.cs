@@ -52,7 +52,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy
     {
         // play taking hit animation
         // if takes 3.hit, knock back
-        // recovery time
+        // recovery time, wait until speed is 0
         // again walking state
 
     }

@@ -1,25 +1,45 @@
+using System.Collections;
 using UnityEngine;
 
 public class CombatController : AnimatorBrain
 {
+    public static CombatController instance;
     public float damage = 10;
     private float comboTimer = 0f;
     private float comboTimeout = 1f;
     [SerializeField]
     private int comboCount = 0;
+    public bool shouldKnockback = false;
     private bool isRightCombo = false;
     private bool isLeftCombo = false;
     private bool isAttacking = false;
     private bool isCrouching = false;
+    public bool isUpperCut = false;
     private const int UPPERBODY = 0;
     private const int LOWERBODY = 1;
 
     // Yeni eklenen değişkenler
     private bool isComboInterrupted = false;
-    private float minTimeBetweenCombos = 0.1f; // Kombolar arası minimum süre
+    private float minTimeBetweenCombos = 0.1f;
     private float lastComboTime = 0f;
+    [SerializeField]
+    private int uppercutCount = 0; // Uppercut sayacı
+    [SerializeField]
+    private int maxUppercutInAir = 2; // Havada yapılabilecek maksimum uppercut
+    private PlayerController playerController; // PlayerController referansı
 
-    public static CombatController instance;
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        playerController = GetComponent<PlayerController>();
+    }
 
     void Start()
     {
@@ -129,12 +149,10 @@ public class CombatController : AnimatorBrain
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
-            if (!isCrouching)
+
+            if (layer == LOWERBODY)
             {
-                isAttacking = true;
-                isRightCombo = false;
-                isLeftCombo = false;
-                Play(Animations.UPPERCUT, layer, true, true);
+                HandleUppercut(layer);
             }
         }
         else if (Input.GetKey(KeyCode.S))
@@ -146,7 +164,6 @@ public class CombatController : AnimatorBrain
             Play(Animations.IDLE, layer, false, true);
         }
     }
-
     private void HandleRightCombo(int layer)
     {
         if (!isCrouching)
@@ -174,7 +191,34 @@ public class CombatController : AnimatorBrain
             ExecuteLeftCombo(layer, isComboInterrupted);
         }
     }
+    private void HandleUppercut(int layer)
+    {
 
+        // Havadayken ve uppercut limiti dolmamışsa
+        if (!playerController.isGrounded && uppercutCount < maxUppercutInAir)
+        {
+            ExecuteUppercut(layer);
+
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            uppercutCount = 0;
+        }
+    }
+    private void ExecuteUppercut(int layer)
+    {
+        Debug.Log("Uppercut");
+        uppercutCount++;
+        isUpperCut = true;
+        isAttacking = true;
+        isRightCombo = false;
+        isLeftCombo = false;
+        Play(Animations.UPPERCUT, layer, true, true);
+        ResetCombo();
+    }
     private void HandleCrouch(int layer)
     {
         if (!isCrouching)
@@ -200,6 +244,7 @@ public class CombatController : AnimatorBrain
                 Play(Animations.PUNCHRIGHT, layer, interrupt, true);
                 break;
             case 3:
+                ActivateKnockback();
                 Play(Animations.KICKRIGHT, layer, interrupt, true);
                 ResetCombo();
                 break;
@@ -221,6 +266,7 @@ public class CombatController : AnimatorBrain
                 Play(Animations.PUNCHLEFT, layer, interrupt, true);
                 break;
             case 3:
+                ActivateKnockback();
                 Play(Animations.KICKLEFT, layer, interrupt, true);
                 ResetCombo();
                 break;
@@ -234,8 +280,19 @@ public class CombatController : AnimatorBrain
         isRightCombo = false;
         isLeftCombo = false;
         isComboInterrupted = false;
-    }
 
+        StartCoroutine(ResetKnockBack());
+    }
+    IEnumerator ResetKnockBack()
+    {
+        yield return new WaitForSeconds(0.3f);
+        isUpperCut = false;
+        shouldKnockback = false;
+    }
+    void ActivateKnockback()
+    {
+        shouldKnockback = true;
+    }
     private void CheckTopAnimation()
     {
         Attack(UPPERBODY);
