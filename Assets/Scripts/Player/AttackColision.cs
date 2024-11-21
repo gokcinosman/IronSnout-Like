@@ -42,7 +42,7 @@ public class AttackColision : MonoBehaviour
         if (other.gameObject.tag == "Enemy")
         {
             Vector3 direction = new Vector3(other.gameObject.transform.position.x - transform.position.x, 0, 0);
-            other.gameObject.GetComponent<Rigidbody>().AddForce(direction * 1.5f, ForceMode.Impulse);
+            other.gameObject.GetComponent<Rigidbody>().AddForce(direction * 1f, ForceMode.Impulse);
 
         }
     }
