@@ -22,38 +22,18 @@ public class BaseEnemy : MonoBehaviour, IEnemy
     protected virtual void Update()
     {
 
-        if (currentState is WalkingState)
-        {
-            MoveBehaviour();
-        }
-        else if (currentState is AttackState)
-        {
-            AttackBehaviour();
 
-        }
     }
 
     public virtual void MoveBehaviour()
     {
 
-        if (Vector2.Distance(transform.position, playerTransform.position) > stoppingDistance)
-        {
-            Vector2 targetPosition = new Vector2(playerTransform.position.x, transform.position.y);
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, 2 * Time.deltaTime);
-        }
-        else
-        {
-            ChangeState(new AttackState());
-            Debug.Log("Changing to Attack State"); // Debug için
-        }
+
 
     }
     public virtual void TakingHit()
     {
-        // play taking hit animation
-        // if takes 3.hit, knock back
-        // recovery time, wait until speed is 0
-        // again walking state
+
 
     }
 
